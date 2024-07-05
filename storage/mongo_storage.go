@@ -10,20 +10,20 @@ import (
 
 type MongoStorage struct {
 	database          *mongo.Database
-	accountCollection *mongo.Collection
+	userCollection    *mongo.Collection
 	sessionCollection *mongo.Collection
-	accountModel      *Account
-	sessionModel      *CookieDB
+	userModel         User
+	sessionModel      CookieDB
 }
 
 func NewMongoStorage(database *mongo.Database) *MongoStorage {
-	accountCollection := initAccountCollection(database)
+	userCollection := initUserCollection(database)
 	sessionCollection := initSessionCollection(database)
-	return &MongoStorage{database: database, accountCollection: accountCollection, sessionCollection: sessionCollection}
+	return &MongoStorage{database: database, userCollection: userCollection, sessionCollection: sessionCollection}
 }
 
-func initAccountCollection(database *mongo.Database) *mongo.Collection {
-	coll := database.Collection("account")
+func initUserCollection(database *mongo.Database) *mongo.Collection {
+	coll := database.Collection("users")
 	indexModel := mongo.IndexModel{
 		Keys:    bson.D{{"email", 1}},
 		Options: options.Index().SetUnique(true),
@@ -32,7 +32,7 @@ func initAccountCollection(database *mongo.Database) *mongo.Collection {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Name of Index Created for Account:", result)
+	fmt.Println("Name of Index Created for User Collection:", result)
 	return coll
 }
 
@@ -46,6 +46,6 @@ func initSessionCollection(database *mongo.Database) *mongo.Collection {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Name of Index Created for Session:", result)
+	fmt.Println("Name of Index Created for Session Collection:", result)
 	return coll
 }

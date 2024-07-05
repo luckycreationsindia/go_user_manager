@@ -33,6 +33,7 @@ type CookieDB struct {
 	SessionToken   string             `json:"sessionToken" bson:"sessionToken"`
 	SessionExpires time.Time          `json:"sessionExpires" bson:"sessionExpires"`
 	User           primitive.ObjectID `json:"user" bson:"user,omitempty"`
+	UserData       User               `json:"user_data" bson:"user_data,omitempty"`
 }
 
 //type CookieDB struct {

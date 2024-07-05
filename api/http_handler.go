@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"net/http"
 	"time"
 	"user_manager/commons"
@@ -15,8 +16,8 @@ type APIServer struct {
 	sessionStorage storage.SessionStorage
 }
 
-func NewAPIServer(listenAddr string, userStorage storage.UserStorage, sessionStorage storage.SessionStorage) *APIServer {
-	return &APIServer{listenAddr, userStorage, sessionStorage}
+func NewAPIServer(listenAddr string, storage *storage.MongoStorage) *APIServer {
+	return &APIServer{listenAddr, storage, storage}
 }
 
 type apiFunc func(http.ResponseWriter, *http.Request) error
@@ -40,13 +41,30 @@ func HttpHandler(f apiFunc) http.HandlerFunc {
 
 func (s *APIServer) StartServer() error {
 	router := mux.NewRouter()
-	s.initAccountHandlerRoutes(router)
+	s.initUserHandlerRoutes(router)
 
 	fmt.Println("Server is running on:", s.listenAddr)
 
+	origins := []string{"http://localhost:3000", "http://localhost:8000"}
+
+	c := cors.New(cors.Options{
+		AllowCredentials: true,
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodDelete,
+		},
+		AllowOriginFunc: func(origin string) bool {
+			return commons.StringContains(origins, origin)
+		},
+		Debug: false,
+	})
+
+	handler := c.Handler(router)
+
 	server := http.Server{
 		Addr:         s.listenAddr,
-		Handler:      router,
+		Handler:      handler,
 		ReadTimeout:  time.Second * 30,
 		WriteTimeout: time.Second * 30,
 	}

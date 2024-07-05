@@ -18,7 +18,7 @@ func (s *MongoStorage) GetSession(sessionToken string) (*CookieDB, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	return s.sessionModel, nil
+	return &s.sessionModel, nil
 }
 
 func (s *MongoStorage) DeleteSession(sessionToken string) error {

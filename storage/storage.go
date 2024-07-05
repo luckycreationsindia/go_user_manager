@@ -5,14 +5,14 @@ import (
 	"user_manager/types"
 )
 
-type Account types.Account
+type User types.User
 type CookieDB types.CookieDB
 
 type UserStorage interface {
-	CreateAccount(account *Account) error
-	GetAccount(id string) (*Account, error)
-	ValidateAccount(account *Account) (*Account, error)
-	DeleteAccount(id string) error
+	CreateUser(user *User) error
+	GetUser(id string) (*User, error)
+	ValidateUser(user *User) (*User, error)
+	DeleteUser(id string) error
 }
 
 type SessionStorage interface {
