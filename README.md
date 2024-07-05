@@ -15,6 +15,8 @@
 
 `go mod download`
 
+3. Create a .env file in the root directory and add variables from .env-example file.
+
 ## Usage
 1. Start the MongoDB server.
 
